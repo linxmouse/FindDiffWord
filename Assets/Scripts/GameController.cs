@@ -1,9 +1,7 @@
-using System;
+﻿using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
@@ -12,32 +10,32 @@ public class GameController : MonoBehaviour
     public Transform textContainer;     // 字符父节点
     public GameObject characterPrefab;  // 字符预制体
 
-    [Header("Game Settings")] 
+    [Header("Game Settings")]
     public float restartDelay = 1.0f;   // 重新开始延迟时间
     private int score;                  // 当前得分
     public int totalCharacters = 75;    // 总字符数
     private string currentNormalChar;   // 普通字符
     private string currentDiffChar;     // 差异字符
-    
+
     // 运行时数据
     private List<TextMeshProUGUI> characters = new List<TextMeshProUGUI>();
     private TextDifference currentDifference;
-    
+
     public static GameController Instance;
-    
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         InitializeCharacters();
         RestartGame();
     }
-    
+
     // 初始化字符对象（只需要执行一次）
     private void InitializeCharacters()
     {
@@ -53,15 +51,31 @@ public class GameController : MonoBehaviour
             clickHandler.Init(i);
         }
     }
-    
+
     private void GenerateNewCharacterPair()
+    {
+        if (Random.value > 0.5f) GenerateChinesePair();
+        else GenerateAlphabetPair();
+    }
+
+    // 生成字母差异对
+    private void GenerateAlphabetPair()
     {
         // 随机生成大写字母（A-Z）
         char upperChar = (char)Random.Range('A', 'Z' + 1);
         currentNormalChar = upperChar.ToString();
         currentDiffChar = upperChar.ToString().ToLower();
     }
-    
+    // 生成汉字差异对
+    private void GenerateChinesePair()
+    {
+        var pair = ChinesePair.ChinesePairs[Random.Range(0, ChinesePair.ChinesePairs.Count)];
+        currentNormalChar = pair[0];
+        currentDiffChar = pair[1];
+        // 随机交换正确位置（增强认知）
+        if (Random.value > 0.5f) (currentNormalChar, currentDiffChar) = (currentDiffChar, currentNormalChar);
+    }
+
     private void RestartGame()
     {
         // 生成新字符对
@@ -70,25 +84,9 @@ public class GameController : MonoBehaviour
         foreach (var tmp in characters)
         {
             tmp.text = currentNormalChar;
-            // tmp.ForceMeshUpdate(true);
-            ResetCharacterColor(tmp);
         }
         // 创建新差异点
         CreateDifference();
-    }
-
-    private void ResetCharacterColor(TextMeshProUGUI tmp)
-    {
-        TMP_CharacterInfo charInfo = tmp.textInfo.characterInfo[0];
-        int vertexIndex = charInfo.vertexIndex;
-        Color32[] vertexColors = tmp.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
-        if (vertexColors == null) return;
-        Color32 defaultColor = new Color32(255, 255, 255, 255);
-        vertexColors[vertexIndex] = defaultColor;
-        vertexColors[vertexIndex + 1] = defaultColor;
-        vertexColors[vertexIndex + 2] = defaultColor;
-        vertexColors[vertexIndex + 3] = defaultColor;
-        tmp.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
     }
 
     private void CreateDifference()
@@ -106,7 +104,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void OnCharacterClicked(int index)
@@ -125,16 +123,90 @@ public class GameController : MonoBehaviour
     void HighlightCharacter(int index)
     {
         TextMeshProUGUI tmp = characters[index];
-        // 修改顶点颜色
-        TMP_CharacterInfo charInfo = tmp.textInfo.characterInfo[0];
-        int vertexIndex = charInfo.vertexIndex;
-        // 获取颜色数组
-        Color32[] vertexColors = tmp.textInfo.meshInfo[charInfo.materialReferenceIndex].colors32;
-        // 设置绿色高亮
-        vertexColors[vertexIndex] = new Color32(0, 255, 0, 255);
-        vertexColors[vertexIndex + 1] = new Color32(0, 255, 0, 255);
-        vertexColors[vertexIndex + 2] = new Color32(0, 255, 0, 255);
-        vertexColors[vertexIndex + 3] = new Color32(0, 255, 0, 255);
-        tmp.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
+        // 播放动画
+        PlayStrokeAnimation(tmp);
+    }
+
+    private void PlayStrokeAnimation(TextMeshProUGUI tmp)
+    {
+        // 强制生成最新网格数据
+        tmp.ForceMeshUpdate(true);
+        // 记录原始数据（位置+颜色）
+        var originalData = new
+        {
+            positions = new List<Vector3>(),
+            colors = new List<Color32>(),
+            localPosition = tmp.transform.localPosition
+        };
+        TMP_TextInfo textInfo = tmp.textInfo;
+        // 遍历所有字符的每个顶点
+        for (int i = 0; i < textInfo.characterCount; i++)
+        {
+            TMP_CharacterInfo charInfo = textInfo.characterInfo[i];
+            int materialIndex = charInfo.materialReferenceIndex;
+            // 记录顶点位置
+            Vector3[] verts = textInfo.meshInfo[materialIndex].vertices;
+            for (int j = 0; j < 4; j++)
+            {
+                originalData.positions.Add(verts[charInfo.vertexIndex + j]);
+            }
+            // 记录顶点颜色
+            Color32[] colors = textInfo.meshInfo[materialIndex].colors32;
+            for (int j = 0; j < 4; j++)
+            {
+                originalData.colors.Add(colors[charInfo.vertexIndex + j]);
+            }
+        }
+        
+        // 创建动画序列
+        DOTween.Sequence()
+            .Append(tmp.transform.DOShakePosition(
+                duration: 0.5f,
+                strength: 3f,
+                vibrato: 10,
+                randomness: 90f,
+                snapping: false
+            ))
+            .Join(tmp.DOColor(Color.green, 0.3f))
+            .OnComplete(() =>
+            {
+                // 重置所有状态
+                ResetVertices(tmp, originalData.positions, originalData.colors);
+                tmp.transform.localPosition = originalData.localPosition;
+            });
+    }
+
+    private void ResetVertices(TextMeshProUGUI tmp, List<Vector3> positions, List<Color32> colors)
+    {
+        TMP_TextInfo textInfo = tmp.textInfo;
+        int posIndex = 0;
+        int colorIndex = 0;
+        // 遍历所有字符
+        for (int i = 0; i < textInfo.characterCount; i++)
+        {
+            TMP_CharacterInfo charInfo = textInfo.characterInfo[i];
+            int materialIndex = charInfo.materialReferenceIndex;
+            // 重置顶点位置
+            Vector3[] verts = textInfo.meshInfo[materialIndex].vertices;
+            for (int j = 0; j < 4; j++)
+            {
+                if (posIndex < positions.Count)
+                {
+                    verts[charInfo.vertexIndex + j] = positions[posIndex++];
+                }
+            }
+            // 重置顶点颜色
+            Color32[] colorArray = textInfo.meshInfo[materialIndex].colors32;
+            for (int j = 0; j < 4; j++)
+            {
+                if (colorIndex < colors.Count)
+                {
+                    colorArray[charInfo.vertexIndex + j] = colors[colorIndex++];
+                }
+            }
+        }
+        // 更新所有数据
+        tmp.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
+        tmp.color = Color.white;
     }
 }
