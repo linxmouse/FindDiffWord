@@ -7,8 +7,9 @@ using Random = UnityEngine.Random;
 public class GameController : MonoBehaviour
 {
     [Header("UI References")]
-    public Transform textContainer;     // 字符父节点
-    public GameObject characterPrefab;  // 字符预制体
+    public Transform textContainer;         // 字符父节点
+    public GameObject characterPrefab;      // 字符预制体
+    public SpriteNumberDisplay scoreNumber; // 得分显示
 
     [Header("Game Settings")]
     public float restartDelay = 1.0f;   // 重新开始延迟时间
@@ -20,6 +21,7 @@ public class GameController : MonoBehaviour
     // 运行时数据
     private List<TextMeshProUGUI> characters = new List<TextMeshProUGUI>();
     private TextDifference currentDifference;
+    private bool isScored = false;      // 避免重复加分
 
     public static GameController Instance;
 
@@ -87,6 +89,8 @@ public class GameController : MonoBehaviour
         }
         // 创建新差异点
         CreateDifference();
+        
+        isScored = false;
     }
 
     private void CreateDifference()
@@ -100,21 +104,17 @@ public class GameController : MonoBehaviour
             correctChar = currentNormalChar,
         };
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    
     public void OnCharacterClicked(int index)
     {
+        if (isScored) return;
         if (index == currentDifference.charIndex)
         {
+            isScored = true;
             HighlightCharacter(index);
             // 得分逻辑
             score += 100;
-            Debug.Log($"Score: {score}");
+            scoreNumber.SetNumber(score);
             // 延迟后重新开始游戏
             Invoke("RestartGame", restartDelay);
         }
