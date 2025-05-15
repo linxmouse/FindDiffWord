@@ -1,8 +1,15 @@
 ﻿using DG.Tweening;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
+using Unity.Logging;
+using Unity.Logging.Sinks;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.Linq;
+using HidSharp;
 
 public class GameController : MonoBehaviour
 {
@@ -25,8 +32,117 @@ public class GameController : MonoBehaviour
 
     public static GameController Instance;
 
+    public class Person
+    {
+        public int Age { get; set; }
+        public string Name { get; set; }
+        public string Hobby { get; set; }
+
+        public override string ToString()
+        {
+            return $"Age = {Age}, Name = {Name}, Hobby = {Hobby}";
+        }
+    }
+
     private void Awake()
     {
+        // 基础路径配置
+        string basePath = Application.isEditor ?
+            Path.GetFullPath(Path.Combine(Application.dataPath, "..")) :
+            Application.persistentDataPath;
+        // 创建日志目录
+        string logsFolder = Path.Combine(basePath, "Logs");
+        if (!Directory.Exists(logsFolder))
+            Directory.CreateDirectory(logsFolder);
+        // 生成带时间戳的文件名
+        string timestamp = DateTime.Now.ToString("yyyyMMdd-HH_mm_ss");
+        string logFileName = $"log-{timestamp}.txt";
+        // 完成日志路径
+        string fullLogPath = Path.Combine(logsFolder, logFileName);
+        // 配置日志系统
+        Log.Logger = new Unity.Logging.Logger(new LoggerConfig()
+            .MinimumLevel.Debug()
+            .OutputTemplate("[{Timestamp} {Level}] {Message}{NewLine}{Stacktrace}")
+            .WriteTo.File(fullLogPath)
+            .WriteTo.UnityEditorConsole(outputTemplate: "{Message}{NewLine}{Stacktrace}"));
+
+        string jstr = JsonConvert.SerializeObject(new Person { Age = 18, Name = "zhansan", Hobby = "Programing" });
+        Log.Warning(jstr);
+        var p = JsonConvert.DeserializeObject<Person>(jstr);
+        Log.Warning(p.ToString());
+
+        // 生成随机姓名
+        var name = Faker.Name.FullName();
+        Log.Warning(name);
+        name = Faker.Name.FullName();
+        Log.Warning(name);
+        name = Faker.Name.FullName();
+        Log.Warning(name);
+        // 生成随机电子邮箱地址
+        var email = Faker.Internet.Email();
+        Log.Info(email);
+        email = Faker.Internet.Email();
+        Log.Info(email);
+        email = Faker.Internet.Email();
+        Log.Info(email);
+        // 生成随机电话号码
+        var phone = Faker.Phone.Number();
+        Log.Info(phone);
+        phone = Faker.Phone.Number();
+        Log.Info(phone);
+        phone = Faker.Phone.Number();
+        Log.Info(phone);
+        phone = Faker.Phone.Number();
+        Log.Info(phone);
+        // 生成随机地址
+        var addr = Faker.Address.ZipCode();
+        Log.Info(addr);
+        addr = Faker.Address.ZipCode();
+        Log.Info(addr);
+        addr = Faker.Address.ZipCode();
+        Log.Info(addr);
+
+        //UsbRegDeviceList usbDevices = UsbDevice.AllDevices;
+        //if (usbDevices.Count == 0)
+        //{
+        //    Log.Warning("No Usb device found");
+        //}
+        //else
+        //{
+        //    foreach (UsbRegistry registry in usbDevices.ToList())
+        //    {
+        //        Log.Warning($"Device GUID: {registry.DevicePath}");
+        //        Log.Warning($"VendorId: {registry.Vid}, ProductId: {registry.Pid}, Version: {registry.Rev}");
+        //    }
+        //}
+
+        #region HIDSharp
+        var list = DeviceList.Local;
+        list.Changed += (sender, e) => Log.Warning("Device list changed.");
+        var allDevices = list.GetAllDevices().ToArray();
+        Log.Info("All device list:");
+        foreach (var device in allDevices) Log.Warning(device.ToString() + " @ " + device.DevicePath);
+        //// 查找设备
+        //var deviceList = DeviceList.Local;
+        //var hidDevice = deviceList.GetHidDevices()
+        //    .FirstOrDefault(d => d.VendorID == 0x1234 && d.ProductID == 0x5678);
+        //if (hidDevice != null)
+        //{
+        //    using (var stream = hidDevice.Open())
+        //    {
+        //        // 写入数据（自动处理 Report ID）
+        //        byte[] data = new byte[] { 0x01, 0x02, 0x03 };
+        //        stream.Write(data);
+        //        //stream.WriteAsync(data);
+
+        //        // 读取数据
+        //        byte[] buffer = new byte[64];
+        //        //int bytesRead = stream.Read(buffer);
+        //        int bytesRead = await stream.ReadAsync(buffer);
+        //    }
+        //} 
+        #endregion
+
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
