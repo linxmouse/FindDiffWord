@@ -66,11 +66,14 @@ public class GameController : MonoBehaviour
             .WriteTo.File(fullLogPath)
             .WriteTo.UnityEditorConsole(outputTemplate: "{Message}{NewLine}{Stacktrace}"));
 
+        #region Newtonsoft.Json测试
         string jstr = JsonConvert.SerializeObject(new Person { Age = 18, Name = "zhansan", Hobby = "Programing" });
         Log.Warning(jstr);
         var p = JsonConvert.DeserializeObject<Person>(jstr);
         Log.Warning(p.ToString());
+        #endregion
 
+        #region Unity.Logging测试
         // 生成随机姓名
         var name = Faker.Name.FullName();
         Log.Warning(name);
@@ -100,8 +103,10 @@ public class GameController : MonoBehaviour
         addr = Faker.Address.ZipCode();
         Log.Info(addr);
         addr = Faker.Address.ZipCode();
-        Log.Info(addr);
+        Log.Info(addr); 
+        #endregion
 
+        #region LibusbDotNet测试
         //UsbRegDeviceList usbDevices = UsbDevice.AllDevices;
         //if (usbDevices.Count == 0)
         //{
@@ -114,11 +119,15 @@ public class GameController : MonoBehaviour
         //        Log.Warning($"Device GUID: {registry.DevicePath}");
         //        Log.Warning($"VendorId: {registry.Vid}, ProductId: {registry.Pid}, Version: {registry.Rev}");
         //    }
-        //}
+        //} 
+        #endregion
 
-        #region HIDSharp
+        #region HIDSharp测试
         var list = DeviceList.Local;
-        list.Changed += (sender, e) => Log.Warning("Device list changed.");
+        list.Changed += (sender, e) =>
+        {
+            Log.Warning("Device list changed.");
+        };
         var allDevices = list.GetAllDevices().ToArray();
         Log.Info("All device list:");
         foreach (var device in allDevices) Log.Warning(device.ToString() + " @ " + device.DevicePath);
