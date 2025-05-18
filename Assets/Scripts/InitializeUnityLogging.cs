@@ -33,7 +33,11 @@ public class InitializeUnityLogging : MonoBehaviour
         string fullLogPath = Path.Combine(logsFolder, logFileName);
         // 配置日志系统
         Log.Logger = new Unity.Logging.Logger(new LoggerConfig()
+#if UNITY_EDITOR
             .MinimumLevel.Debug()
+#else
+            .MinimumLevel.Warning()
+#endif
             .OutputTemplate("[{Timestamp} {Level}] {Message}{NewLine}{Stacktrace}")
             .WriteTo.File(fullLogPath)
             .WriteTo.UnityEditorConsole(outputTemplate: "{Message}{NewLine}{Stacktrace}"));

@@ -6,8 +6,7 @@ using Unity.Logging;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Linq;
-using HidApiAdapter;
-//using HidSharp;
+using HidSharp;
 
 public class GameController : MonoBehaviour
 {
@@ -85,25 +84,14 @@ public class GameController : MonoBehaviour
         Log.Info(addr);
         #endregion
 
-        #region HidAPIAdapter测试
-        var devices = HidDeviceManager.GetManager().SearchDevices(0, 0);
-        if (devices.Any())
-        {
-            foreach (var device in devices)
-            {
-                device.Connect();
-                Log.Info($"device: {device.Path()} manufacturer: {device.Manufacturer()} serial number: {device.SerialNumber()}");
-                device.Disconnect();
-            }
-        }
-        #endregion
-
         #region HIDSharp测试
-        //var list = DeviceList.Local;
-        //list.Changed += (sender, e) =>
-        //{
-        //    Log.Warning("Device list changed.");
-        //};
+        var list = DeviceList.Local;
+        list.Changed += (sender, e) =>
+        {
+            Log.Warning("Device list changed.");
+        };
+        var all = DeviceList.Local.GetAllDevices();
+        foreach (var dev in all) Log.Info(dev.ToString());
         //// 查找设备
         //var deviceList = DeviceList.Local;
         //var hidDevice = deviceList.GetHidDevices()
@@ -308,5 +296,11 @@ public class GameController : MonoBehaviour
         // 更新所有数据
         tmp.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
         tmp.color = Color.white;
+    }
+
+    private void OnDestroy()
+    {
+        // 关闭HID设备
+        DeviceList.Local.Shutdown();
     }
 }
