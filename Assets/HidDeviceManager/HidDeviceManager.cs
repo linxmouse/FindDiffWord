@@ -6,7 +6,7 @@ using System;
 using Unity.Logging;
 using System.Linq;
 
-public class HIDDeviceManager : MonoBehaviour
+public class HidDeviceManager : MonoBehaviour
 {
     [SerializeField]
     private int vendorId = 0x1234;

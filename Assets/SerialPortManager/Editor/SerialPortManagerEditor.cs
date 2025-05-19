@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEditor;
-using UnityEditor.UI;
+﻿using UnityEditor;
 using UnityEngine;
 
 #if UNITY_EDITOR

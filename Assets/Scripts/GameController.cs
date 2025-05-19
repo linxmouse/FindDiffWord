@@ -52,36 +52,36 @@ public class GameController : MonoBehaviour
         #endregion
 
         #region Unity.Logging测试
-        // 生成随机姓名
-        var name = Faker.Name.FullName();
-        Log.Warning(name);
-        name = Faker.Name.FullName();
-        Log.Warning(name);
-        name = Faker.Name.FullName();
-        Log.Warning(name);
-        // 生成随机电子邮箱地址
-        var email = Faker.Internet.Email();
-        Log.Info(email);
-        email = Faker.Internet.Email();
-        Log.Info(email);
-        email = Faker.Internet.Email();
-        Log.Info(email);
-        // 生成随机电话号码
-        var phone = Faker.Phone.Number();
-        Log.Info(phone);
-        phone = Faker.Phone.Number();
-        Log.Info(phone);
-        phone = Faker.Phone.Number();
-        Log.Info(phone);
-        phone = Faker.Phone.Number();
-        Log.Info(phone);
-        // 生成随机地址
-        var addr = Faker.Address.ZipCode();
-        Log.Info(addr);
-        addr = Faker.Address.ZipCode();
-        Log.Info(addr);
-        addr = Faker.Address.ZipCode();
-        Log.Info(addr);
+        //// 生成随机姓名
+        //var name = Faker.Name.FullName();
+        //Log.Warning(name);
+        //name = Faker.Name.FullName();
+        //Log.Warning(name);
+        //name = Faker.Name.FullName();
+        //Log.Warning(name);
+        //// 生成随机电子邮箱地址
+        //var email = Faker.Internet.Email();
+        //Log.Info(email);
+        //email = Faker.Internet.Email();
+        //Log.Info(email);
+        //email = Faker.Internet.Email();
+        //Log.Info(email);
+        //// 生成随机电话号码
+        //var phone = Faker.Phone.Number();
+        //Log.Info(phone);
+        //phone = Faker.Phone.Number();
+        //Log.Info(phone);
+        //phone = Faker.Phone.Number();
+        //Log.Info(phone);
+        //phone = Faker.Phone.Number();
+        //Log.Info(phone);
+        //// 生成随机地址
+        //var addr = Faker.Address.ZipCode();
+        //Log.Info(addr);
+        //addr = Faker.Address.ZipCode();
+        //Log.Info(addr);
+        //addr = Faker.Address.ZipCode();
+        //Log.Info(addr);
         #endregion
 
         #region HIDSharp测试
@@ -90,7 +90,9 @@ public class GameController : MonoBehaviour
         {
             Log.Warning("Device list changed.");
         };
-        var all = DeviceList.Local.GetAllDevices();
+        //var all = DeviceList.Local.GetAllDevices();
+        //var all = DeviceList.Local.GetSerialDevices();
+        var all = DeviceList.Local.GetHidDevices();
         foreach (var dev in all) Log.Info(dev.ToString());
         //// 查找设备
         //var deviceList = DeviceList.Local;
@@ -299,6 +301,12 @@ public class GameController : MonoBehaviour
     }
 
     private void OnDestroy()
+    {
+        // 关闭HID设备
+        DeviceList.Local.Shutdown();
+    }
+
+    private void OnApplicationQuit()
     {
         // 关闭HID设备
         DeviceList.Local.Shutdown();
