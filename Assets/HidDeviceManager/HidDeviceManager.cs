@@ -15,7 +15,6 @@ public class HidDeviceManager : MonoBehaviour
 
     private HidStream _hidStream;
     private Thread _readThread;
-    private volatile bool _isReadThreadRunning;     // 用于安全终止线程
     private CancellationTokenSource _reconnectCts;  // 用于取消自动重连任务
 
     [Header("HID Device Settings")]
@@ -30,7 +29,7 @@ public class HidDeviceManager : MonoBehaviour
     [SerializeField]
     private int _productIdDec;                      // 设备的产品ID（十进制）
     [SerializeField]
-    private bool _autoReconnect = true;             // 是否自动重连
+    private bool _autoReconnect = false;             // 是否自动重连
     [SerializeField]
     private float _reconnectInterval = 5f;          // 重连延迟时间（秒）
 
@@ -81,6 +80,7 @@ public class HidDeviceManager : MonoBehaviour
             }
             // 尝试找到匹配的设备
             selectedDeviceIndex = availableDevices.FindIndex(d => d.VendorId == VendorId && d.ProductId == ProductId);
+            if (!IsConnected) CloseDevice();
             this.LogInfo($"发现 {availableDevices.Count} 个 HID 设备");
         }
         catch (Exception e) { this.LogError($"刷新设备列表失败: {e.Message}"); }
@@ -171,8 +171,7 @@ public class HidDeviceManager : MonoBehaviour
                 return false;
             }
 
-            // 重置并启动读取线程
-            _isReadThreadRunning = true;
+            // 启动读取线程
             _readThread = new Thread(ReadDeviceData) { IsBackground = true };
             _readThread.Start();
 
@@ -182,26 +181,10 @@ public class HidDeviceManager : MonoBehaviour
         catch (Exception e)
         {
             this.LogError($"HID设备连接失败: {e.Message}");
-            // 失败情况下清理资源
+            // 失败清理资源
             CloseDevice();
             return false;
         }
-    }
-
-    /// <summary>
-    /// 安全关闭HidStream
-    /// </summary>
-    private void SafeCloseStream()
-    {
-        if (_hidStream == null) return;
-
-        try
-        {
-            _hidStream.Close();
-            _hidStream.Dispose();
-        }
-        catch (Exception e) { this.LogWarning($"关闭HID流时发生错误: {e.Message}"); }
-        finally { _hidStream = null; }
     }
 
     /// <summary>
@@ -209,14 +192,18 @@ public class HidDeviceManager : MonoBehaviour
     /// </summary>
     public void CloseDevice()
     {
-        // 然后关闭HidStream
-        SafeCloseStream();
+        // 关闭HidStream
+        try
+        {
+            _hidStream?.Close();
+            _hidStream?.Dispose();
+        }
+        catch (Exception e) { this.LogWarning($"关闭HID流时发生错误: {e.Message}"); }
+        finally { _hidStream = null; }
         DeviceList.Local.Shutdown();
         // 首先停止读取线程
         if (_readThread != null && _readThread.IsAlive)
         {
-            // 设置标志以通知线程退出
-            _isReadThreadRunning = false;
             // 等待线程自行终止
             if (!_readThread.Join(2000))
             {
@@ -234,8 +221,8 @@ public class HidDeviceManager : MonoBehaviour
     {
         if (_hidStream == null) return;
         byte[] buffer = new byte[_hidStream.Device.GetMaxInputReportLength()];
-        // 使用_isReadThreadRunning作为退出条件，而不仅仅依赖IsConnected
-        while (_isReadThreadRunning && IsConnected)
+
+        while (IsConnected)
         {
             try
             {
@@ -256,8 +243,8 @@ public class HidDeviceManager : MonoBehaviour
             catch (ObjectDisposedException) { break; }
             catch (Exception e)
             {
-                // 只有当线程应该运行时才记录错误
-                if (_isReadThreadRunning) { this.LogError($"HID设备读取失败: {e.Message}"); }
+                // 只有当线程处于运行状态才记录错误
+                if (IsConnected) { this.LogError($"HID设备读取失败: {e.Message}"); }
                 // 发生错误时退出循环
                 break;
             }
@@ -267,11 +254,12 @@ public class HidDeviceManager : MonoBehaviour
         }
 
         // 线程结束时，确保HidStream已关闭
-        if (_hidStream != null && _isReadThreadRunning)
+        if (_hidStream != null)
         {
-            // 如果线程是因为错误而退出，但未通过CloseDevice调用，则处理清理
+            // 如果线程是因为错误而退出
             this.LogWarning("读取线程异常退出，关闭HID连接");
-            SafeCloseStream();
+            // 清理资源
+            CloseDevice();
         }
     }
 
@@ -436,10 +424,7 @@ public class HidDeviceManager : MonoBehaviour
                         TryConnectToDevice();
                     }
 
-                    try
-                    {
-                        await UniTask.Delay(TimeSpan.FromSeconds(_reconnectInterval), cancellationToken: ct);
-                    }
+                    try { await UniTask.Delay(TimeSpan.FromSeconds(_reconnectInterval), cancellationToken: ct); }
                     // 任务被取消
                     catch (OperationCanceledException) { break; }
                 }

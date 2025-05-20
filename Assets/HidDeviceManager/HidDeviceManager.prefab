@@ -45,11 +45,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _useHexFormat: 1
-  _vendorIdHex: 46D
-  _productIdHex: C31C
-  _vendorIdDec: 1133
-  _productIdDec: 49948
+  _vendorIdHex: 6CB
+  _productIdHex: CE44
+  _vendorIdDec: 1739
+  _productIdDec: 52804
   _autoReconnect: 0
   _reconnectInterval: 5
   availableDevices: []
-  selectedDeviceIndex: 4
+  selectedDeviceIndex: -1

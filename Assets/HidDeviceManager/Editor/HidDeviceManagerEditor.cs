@@ -12,6 +12,7 @@ public class HIDDeviceManagerEditor : Editor
     private string _debugHexString = "AA BB CC";
     private string _tempVendorId = "";
     private string _tempProductId = "";
+    private Vector2 _deviceListScrollPos = Vector2.zero;
 
     // 自定义文本样式
     private GUIStyle _greenTextStyle;
@@ -74,7 +75,7 @@ public class HIDDeviceManagerEditor : Editor
         // 格式切换
         EditorGUI.BeginChangeCheck();
         SerializedProperty useHexFormatProp = serializedObject.FindProperty("_useHexFormat");
-        bool newUseHex = EditorGUILayout.Toggle("HEX", useHexFormatProp.boolValue);
+        bool newUseHex = EditorGUILayout.Toggle("Hex", useHexFormatProp.boolValue);
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(_manager, "Toggle HEX Format");
@@ -93,28 +94,28 @@ public class HIDDeviceManagerEditor : Editor
             }
             EditorUtility.SetDirty(_manager);
         }
-        // VID/PID 输入
+        // VID/PID输入
         EditorGUI.BeginChangeCheck();
         if (_manager.UseHexFormat)
         {
             EditorGUILayout.BeginHorizontal();
-            _tempVendorId = EditorGUILayout.TextField("Vendor ID (16进制)", _tempVendorId);
-            GUILayout.Label($"(10进制: {GetDecimalValue(_tempVendorId)})", GUILayout.Width(80));
+            _tempVendorId = EditorGUILayout.TextField("Vendor ID (Hex)", _tempVendorId);
+            GUILayout.Label($"({GetDecimalValue(_tempVendorId)})", GUILayout.Width(80));
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
-            _tempProductId = EditorGUILayout.TextField("Product ID (16进制)", _tempProductId);
-            GUILayout.Label($"(10进制: {GetDecimalValue(_tempProductId)})", GUILayout.Width(80));
+            _tempProductId = EditorGUILayout.TextField("Product ID (Hex)", _tempProductId);
+            GUILayout.Label($"({GetDecimalValue(_tempProductId)})", GUILayout.Width(80));
             EditorGUILayout.EndHorizontal();
         }
         else
         {
             EditorGUILayout.BeginHorizontal();
-            _tempVendorId = EditorGUILayout.TextField("Vendor ID (10进制)", _tempVendorId);
-            GUILayout.Label($"(16进制: {GetHexValue(_tempVendorId)})", GUILayout.Width(80));
+            _tempVendorId = EditorGUILayout.TextField("Vendor ID", _tempVendorId);
+            GUILayout.Label($"({GetHexValue(_tempVendorId)})", GUILayout.Width(80));
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
-            _tempProductId = EditorGUILayout.TextField("Product ID (10进制)", _tempProductId);
-            GUILayout.Label($"(16进制: {GetHexValue(_tempProductId)})", GUILayout.Width(80));
+            _tempProductId = EditorGUILayout.TextField("Product ID", _tempProductId);
+            GUILayout.Label($"({GetHexValue(_tempProductId)})", GUILayout.Width(80));
             EditorGUILayout.EndHorizontal();
         }
         // 自动重连设置
@@ -153,22 +154,29 @@ public class HIDDeviceManagerEditor : Editor
         _showDeviceList = EditorGUILayout.Foldout(_showDeviceList, $"可用设备列表 ({_manager.availableDevices.Count})");
         if (_showDeviceList)
         {
-            if (_manager.availableDevices.Count == 0)
-            {
-                EditorGUILayout.HelpBox("未找到HID设备", MessageType.Info);
-            }
+            if (_manager.availableDevices.Count == 0) EditorGUILayout.HelpBox("未找到HID设备", MessageType.Info);
             else
             {
+                // 可滚动区域:水平\垂直滚动
+                _deviceListScrollPos = EditorGUILayout.BeginScrollView(
+                    _deviceListScrollPos,
+                    GUILayout.Height(200), // 设置可见区域高度
+                    GUILayout.ExpandHeight(false),
+                    GUILayout.ExpandWidth(true)
+                );
+                // 创建一个内容区域，宽度设置较大来触发水平滚动
                 EditorGUILayout.BeginVertical(GUI.skin.box);
                 for (int i = 0; i < _manager.availableDevices.Count; i++)
                 {
                     var device = _manager.availableDevices[i];
                     EditorGUILayout.BeginHorizontal();
-                    // 设备信息显示
+
                     bool isSelected = (device.VendorId == _manager.VendorId && device.ProductId == _manager.ProductId);
                     GUIStyle labelStyle = isSelected ? _greenTextStyle : EditorStyles.label;
-                    EditorGUILayout.LabelField(device.ToString(), labelStyle);
-                    // 选择按钮
+
+                    // label 宽度可拉长（设置 minWidth）
+                    EditorGUILayout.LabelField(device.ToString(), labelStyle, GUILayout.MinWidth(400));
+
                     if (GUILayout.Button("选择", GUILayout.Width(50)))
                     {
                         _tempVendorId = _manager.UseHexFormat ? device.VendorId.ToString("X") : device.VendorId.ToString();
@@ -178,9 +186,11 @@ public class HIDDeviceManagerEditor : Editor
                         _manager.UpdateDeviceSettings(_tempVendorId, _tempProductId, _manager.UseHexFormat);
                         EditorUtility.SetDirty(_manager);
                     }
+
                     EditorGUILayout.EndHorizontal();
                 }
                 EditorGUILayout.EndVertical();
+                EditorGUILayout.EndScrollView();
             }
         }
         // 调试区域
