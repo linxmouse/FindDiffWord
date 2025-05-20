@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Logging;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Linq;
@@ -46,75 +45,9 @@ public class GameController : MonoBehaviour
         #region Newtonsoft.Json测试
         Debug.Log("Newtonsoft.Json Serialize/Deserialize test:");
         string jstr = JsonConvert.SerializeObject(new Person { Age = 18, Name = "zhansan", Hobby = "Programing" });
-        Log.Debug(jstr);
+        Debug.Log(jstr);
         var p = JsonConvert.DeserializeObject<Person>(jstr);
-        Log.Debug(p.ToString());
-        #endregion
-
-        #region Unity.Logging测试
-        //// 生成随机姓名
-        //var name = Faker.Name.FullName();
-        //Log.Warning(name);
-        //name = Faker.Name.FullName();
-        //Log.Warning(name);
-        //name = Faker.Name.FullName();
-        //Log.Warning(name);
-        //// 生成随机电子邮箱地址
-        //var email = Faker.Internet.Email();
-        //Log.Info(email);
-        //email = Faker.Internet.Email();
-        //Log.Info(email);
-        //email = Faker.Internet.Email();
-        //Log.Info(email);
-        //// 生成随机电话号码
-        //var phone = Faker.Phone.Number();
-        //Log.Info(phone);
-        //phone = Faker.Phone.Number();
-        //Log.Info(phone);
-        //phone = Faker.Phone.Number();
-        //Log.Info(phone);
-        //phone = Faker.Phone.Number();
-        //Log.Info(phone);
-        //// 生成随机地址
-        //var addr = Faker.Address.ZipCode();
-        //Log.Info(addr);
-        //addr = Faker.Address.ZipCode();
-        //Log.Info(addr);
-        //addr = Faker.Address.ZipCode();
-        //Log.Info(addr);
-        #endregion
-
-        #region HIDSharp测试
-        var list = DeviceList.Local;
-        list.Changed += (sender, e) =>
-        {
-            Log.Warning("Device list changed.");
-        };
-        //var all = DeviceList.Local.GetAllDevices();
-        //var all = DeviceList.Local.GetSerialDevices();
-        var all = DeviceList.Local.GetHidDevices();
-        foreach (var dev in all) Log.Info(dev.ToString());
-        //// 查找设备
-        //var deviceList = DeviceList.Local;
-        //var hidDevice = deviceList.GetHidDevices()
-        //    .FirstOrDefault(d => d.VendorID == 1133 && d.ProductID == 49948);
-        //if (hidDevice != null)
-        //{
-        //    Log.Debug(hidDevice.GetFriendlyName());
-        //    using (var stream = hidDevice.Open())
-        //    {
-        //        //// 写入数据（自动处理 Report ID）
-        //        //byte[] data = new byte[] { 0x01, 0x02, 0x03 };
-        //        //stream.Write(data);
-        //        ////stream.WriteAsync(data);
-
-        //        // 读取数据
-        //        byte[] buffer = new byte[64];
-        //        int bytesRead = stream.Read(buffer);
-        //        Log.Info($"read from hid data len: {bytesRead}");
-        //        //int bytesRead = await stream.ReadAsync(buffer);
-        //    }
-        //}
+        Debug.Log(p.ToString());
         #endregion
 
         if (Instance == null) Instance = this;

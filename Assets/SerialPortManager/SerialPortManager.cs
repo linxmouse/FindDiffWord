@@ -22,8 +22,6 @@ public class SerialPortManager : MonoBehaviour
     private string _selectedPortName = "COM3";      // 串口名称
     [SerializeField]
     private int _selectedBaudRate = 9600;           // 波特率
-    [SerializeField]
-    private bool _enableFileLogging = true;         // 是否启用文件日志记录
 
     // 下拉列表选项
     [HideInInspector]
@@ -38,27 +36,12 @@ public class SerialPortManager : MonoBehaviour
 
     public string PortName => _selectedPortName;
     public int BaudRate => _selectedBaudRate;
-    public bool EnableFileLogging
-    {
-        get
-        {
-            if (!_enableFileLogging) SerialPortLogger.UInitialize();
-            return _enableFileLogging;
-        }
-    }
     public bool IsConnected => _serialPort != null && _serialPort.IsOpen;
 
     private void Awake()
     {
         _instance = this;
         DontDestroyOnLoad(gameObject);
-
-        // 初始化日志记录器
-        if (_enableFileLogging)
-        {
-            SerialPortLogger.Initialize();
-            SerialPortLogger.Log("SerialPortManager初始化");
-        }
 
         // 初始化可用的串口列表
         RefreshPortList();
@@ -192,7 +175,6 @@ public class SerialPortManager : MonoBehaviour
         {
             try
             {
-
                 int actLen = _serialPort.Read(buffer, 0, buffer.Length);
                 if (actLen > 0)
                 {

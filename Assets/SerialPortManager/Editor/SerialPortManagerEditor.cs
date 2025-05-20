@@ -8,7 +8,6 @@ public class SerialPortManagerEditor : Editor
     private SerialPortManager _manager;
     private bool _showDebugSection = false;
     private string _debugHexString = "AA BB CC";
-    private string _logPath = "";
 
     // 自定义文本样式
     private GUIStyle _greenTextStyle;
@@ -17,7 +16,6 @@ public class SerialPortManagerEditor : Editor
     private void OnEnable()
     {
         _manager = (SerialPortManager)target;
-        _logPath = System.IO.Path.Combine(Application.persistentDataPath, "SerialPortLogs");
     }
 
     private void CreateTextStyles()
@@ -42,12 +40,7 @@ public class SerialPortManagerEditor : Editor
 
         serializedObject.Update();
 
-        // 记录日志设置
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("日志设置", EditorStyles.boldLabel);
-        SerializedProperty enableFileLoggingProp = serializedObject.FindProperty("_enableFileLogging");
-        EditorGUILayout.PropertyField(enableFileLoggingProp, new GUIContent("启用文件日志"));
-
         // 刷新串口列表按钮
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("串口设置", EditorStyles.boldLabel);
@@ -149,12 +142,9 @@ public class SerialPortManagerEditor : Editor
 
     private void OpenLogFolder()
     {
-        if (!System.IO.Directory.Exists(_logPath))
-        {
-            System.IO.Directory.CreateDirectory(_logPath);
-        }
+        if (UnitySerilogging.GetLogDirectory() == null) return;
         // 打开日志文件夹
-        EditorUtility.RevealInFinder(_logPath);
+        EditorUtility.RevealInFinder(UnitySerilogging.GetLogDirectory());
     }
 }
 #endif

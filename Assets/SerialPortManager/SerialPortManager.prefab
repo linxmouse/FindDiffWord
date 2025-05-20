@@ -44,15 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfdf03788fb21024b9413b39ebd7dfd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selectedPortName: COM2
+  _selectedPortName: COM1
   _selectedBaudRate: 38400
-  _enableFileLogging: 0
   availablePorts:
   - COM1
   - COM2
-  - COM4
-  - COM6
-  - COM3
-  - COM5
-  selectedPortIndex: 1
+  selectedPortIndex: 0
   selectedBaudRateIndex: 5
