@@ -25,8 +25,8 @@ public class HIDDeviceManagerEditor : Editor
         // 初始化临时ID值
         if (_manager.UseHexFormat)
         {
-            _tempVendorId = _manager.VendorId.ToString("X");
-            _tempProductId = _manager.ProductId.ToString("X");
+            _tempVendorId = _manager.VendorId.ToString("X4");
+            _tempProductId = _manager.ProductId.ToString("X4");
         }
         else
         {
@@ -216,7 +216,8 @@ public class HIDDeviceManagerEditor : Editor
         // 状态提示
         EditorGUILayout.Space();
         EditorGUILayout.BeginHorizontal(GUI.skin.box);
-        GUILayout.Label("ℹ️ 配置完成后拖入Hierarchy中使用", _greenTextStyle);
+        //GUILayout.Label("⚠ 请不要将此拖入到Hierarchy中，脚本会自动进行处理", _redTextStyle);
+        EditorGUILayout.HelpBox("请不要将此拖入到Hierarchy中，脚本会自动进行处理", MessageType.Warning, true);
         EditorGUILayout.EndHorizontal();
 
         serializedObject.ApplyModifiedProperties();

@@ -41,12 +41,10 @@ public static class UnitySerilogging/* : MonoBehaviour*/
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeOnRuntime()
     {
-        if (!_initialized)
-        {
-            InitializeLogging();
-            // 在运行时注册应用程序退出事件
-            Application.quitting += OnApplicationQuitting;
-        }
+        if (_initialized) return;
+        InitializeLogging();
+        // 在运行时注册应用程序退出事件
+        Application.quitting += OnApplicationQuitting;
     }
 
     private static void OnApplicationQuitting()

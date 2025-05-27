@@ -6,6 +6,10 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(-100)]
 public class HidDeviceManager : MonoBehaviour
@@ -46,6 +50,79 @@ public class HidDeviceManager : MonoBehaviour
     public bool IsConnected => _hidStream != null && _hidStream.CanRead;
     public string DeviceInfo => IsConnected ? $"Vendor ID: {VendorId}, Product ID: {ProductId}" : "Not connected";
 
+
+#if UNITY_EDITOR
+    // 静态构造函数，用于注册编辑器事件
+    static HidDeviceManager()
+    {
+        // 注册域重载前的清理事件
+        AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+        // 注册编辑器退出事件
+        EditorApplication.quitting += OnEditorQuitting;
+        // 注册播放模式状态改变事件
+        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+    }
+
+    private static void OnBeforeAssemblyReload()
+    {
+        Debug.Log("[HidDeviceManager] 域重载前清理所有HID资源");
+        var manager = Resources.FindObjectsOfTypeAll<HidDeviceManager>().FirstOrDefault();
+        manager.CloseDevice();
+    }
+
+    private static void OnEditorQuitting()
+    {
+        Debug.Log("[HidDeviceManager] 编辑器退出前清理所有HID资源");
+        var manager = Resources.FindObjectsOfTypeAll<HidDeviceManager>().FirstOrDefault();
+        manager.CloseDevice();
+    }
+
+    private static void OnPlayModeStateChanged(PlayModeStateChange state)
+    {
+        HidDeviceManager manager = null;
+        switch (state)
+        {
+            case PlayModeStateChange.ExitingEditMode:
+                Debug.Log("[HidDeviceManager] 退出编辑模式前清理HID资源");
+                manager = Resources.FindObjectsOfTypeAll<HidDeviceManager>().FirstOrDefault();
+                manager?.CloseDevice();
+                break;
+            case PlayModeStateChange.ExitingPlayMode:
+                Debug.Log("[HidDeviceManager] 退出播放模式前清理HID资源");
+                manager = Resources.FindObjectsOfTypeAll<HidDeviceManager>().FirstOrDefault();
+                manager?.CloseDevice();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 脚本重新编译后清理资源
+    /// </summary>
+    [UnityEditor.Callbacks.DidReloadScripts]
+    private static void OnScriptsReloaded()
+    {
+        Debug.Log("[HidDeviceManager] 脚本重载后清理所有HID资源");
+        var manager = Resources.FindObjectsOfTypeAll<HidDeviceManager>().FirstOrDefault();
+        manager.CloseDevice();
+    }
+#endif
+
+    /// <summary>
+    /// 运行时自动将HidDeviceManager实例化到场景中
+    /// </summary>
+    /// RuntimeInitializeLoadType:
+    /// RuntimeInitializeLoadType.BeforeSceneLoad：每次加载新场景前触发
+    /// RuntimeInitializeLoadType.AfterSceneLoad：每次加载新场景后触发
+    /// RuntimeInitializeLoadType.SubsystemRegistration：仅在游戏启动时触发一次
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void OnBeforeSceneLoad()
+    {
+        // 如果实例已存在，直接返回
+        if (_instance != null) return;
+        var prefab = Resources.Load("HidDeviceManager");
+        GameObject.Instantiate(prefab);
+    }
+
     private void Awake()
     {
         _instance = this;
@@ -80,7 +157,6 @@ public class HidDeviceManager : MonoBehaviour
             }
             // 尝试找到匹配的设备
             selectedDeviceIndex = availableDevices.FindIndex(d => d.VendorId == VendorId && d.ProductId == ProductId);
-            if (!IsConnected) CloseDevice();
             this.LogInfo($"发现 {availableDevices.Count} 个 HID 设备");
         }
         catch (Exception e) { this.LogError($"刷新设备列表失败: {e.Message}"); }
@@ -462,6 +538,10 @@ public class HidDeviceManager : MonoBehaviour
         StopConnectionMonitoring();
     }
 
+    /// <summary>
+    /// 编辑器状态且不在Hierarchy
+    /// Play/StopPlay不调用
+    /// </summary>
     private void OnDestroy()
     {
         // 停止自动重连
@@ -471,6 +551,10 @@ public class HidDeviceManager : MonoBehaviour
         _instance = null;
     }
 
+    /// <summary>
+    /// 编辑器状态且不在Hierarchy
+    /// Play/StopPlay不调用
+    /// </summary>
     private void OnApplicationQuit()
     {
         // 应用退出时清理资源
