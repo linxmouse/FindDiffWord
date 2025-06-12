@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Linq;
-using HidSharp;
 
 public class GameController : MonoBehaviour
 {
@@ -235,13 +234,11 @@ public class GameController : MonoBehaviour
 
     private void OnDestroy()
     {
-        // 关闭HID设备
-        DeviceList.Local.Shutdown();
+
     }
 
     private void OnApplicationQuit()
     {
-        // 关闭HID设备
-        DeviceList.Local.Shutdown();
+
     }
 }
