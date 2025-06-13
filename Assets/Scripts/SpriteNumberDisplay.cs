@@ -7,7 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class SpriteNumberDisplay : MonoBehaviour
 {
-    [Header("Sprite Asset配置")] public TMP_SpriteAsset spriteAsset; // 关联的数字图集
+    [Header("Sprite Asset配置")] 
+    public TMP_SpriteAsset spriteAsset; // 关联的数字图集
     public string spriteName = "scoreNum"; // 使用的sprite名称前缀
 
     private TextMeshProUGUI textMesh;
