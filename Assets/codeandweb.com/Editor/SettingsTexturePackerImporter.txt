@@ -1,8 +1,17 @@
 version: 2
 tpsheetFileNames:
 - Assets/codeandweb.com/Example/SpriteSheet/sprites.tpsheet
+- Assets/FIndDiffWord/TPAtlas/flags.tpsheet
+- Assets/FIndDiffWord/TPAtlas/flags-multi-0.tpsheet
+- Assets/FIndDiffWord/TPAtlas/flags-multi-1.tpsheet
 textureFileNames:
 - Assets/codeandweb.com/Example/SpriteSheet/sprites.png
+- Assets/FIndDiffWord/TPAtlas/flags-0.png
+- Assets/FIndDiffWord/TPAtlas/flags-multi-0.png
+- Assets/FIndDiffWord/TPAtlas/flags-multi-1.png
 normalmapFileNames:
 - Assets/codeandweb.com/Example/SpriteSheet/sprites_n.png
+- 
+- 
+- 
 enableDebugOutput: 0
