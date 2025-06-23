@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 26e8390f12b06354d8f9d7c91f2236c6
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Prefabs/Walker2D.prefab
+  uploadId: 709069

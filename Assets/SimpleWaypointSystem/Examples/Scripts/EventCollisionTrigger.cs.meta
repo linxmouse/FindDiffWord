@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: a33ca152f0eeea94c9521225ffdedbf5
+timeCreated: 1455229352
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Scripts/EventCollisionTrigger.cs
+  uploadId: 709069

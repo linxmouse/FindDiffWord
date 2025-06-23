@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 1b314a3189d7f1246aac0753b080d501
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Scripts/Editor/navMoveEditor.cs
+  uploadId: 709069

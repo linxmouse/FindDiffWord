@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: ee1671cf859d3d34eba6b8cbcefc63b1
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Scripts/RapidInputDemo.cs
+  uploadId: 709069

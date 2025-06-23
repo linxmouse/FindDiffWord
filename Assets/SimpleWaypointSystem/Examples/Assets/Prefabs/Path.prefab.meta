@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 3af33d6e3d519f449b060f5afa0b0f52
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Prefabs/Path.prefab
+  uploadId: 709069

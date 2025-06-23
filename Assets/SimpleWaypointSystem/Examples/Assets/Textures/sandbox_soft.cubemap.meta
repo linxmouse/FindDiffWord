@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 33380ad29c07c9e468ec7d11a7d5ddd4
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Textures/sandbox_soft.cubemap
+  uploadId: 709069

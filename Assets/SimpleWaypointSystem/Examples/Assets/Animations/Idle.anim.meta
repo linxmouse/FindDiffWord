@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: c0a32aa5206b400428f52a44b234c97f
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Animations/Idle.anim
+  uploadId: 709069

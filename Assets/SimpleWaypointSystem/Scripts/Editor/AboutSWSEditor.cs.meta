@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: b2d561fce3b6b9d4d87430304ce99769
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Scripts/Editor/AboutSWSEditor.cs
+  uploadId: 709069

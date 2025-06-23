@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: d1d21fd4f2300d14a8246c2a2ea367a4
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Prefabs/PathIndicatorFX2D.prefab
+  uploadId: 709069

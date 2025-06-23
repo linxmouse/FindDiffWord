@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: f6bbed31aa8f77c43b1bebc1d120f84b
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Example6_PathInput.unity
+  uploadId: 709069

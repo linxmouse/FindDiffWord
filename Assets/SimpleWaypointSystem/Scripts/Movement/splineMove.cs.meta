@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 4a2d9078dbe17bc4f966c9d2310be047
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Scripts/Movement/splineMove.cs
+  uploadId: 709069

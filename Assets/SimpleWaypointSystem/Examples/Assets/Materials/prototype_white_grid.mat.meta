@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 5aa95b3fa56e28f43a84e301c3d19e08
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Materials/prototype_white_grid.mat
+  uploadId: 709069

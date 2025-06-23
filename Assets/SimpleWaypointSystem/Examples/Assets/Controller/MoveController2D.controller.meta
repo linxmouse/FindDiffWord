@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 460888530b3567b41ba817892ebbb3f0
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Controller/MoveController2D.controller
+  uploadId: 709069

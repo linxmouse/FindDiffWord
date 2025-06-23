@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
     [Header("UI References")]
     public Transform textContainer;         // 字符父节点
     public GameObject characterPrefab;      // 字符预制体
-    public SpriteNumberDisplay scoreNumber; // 得分显示
+    public SpriteAssetFont scoreNumber; // 得分显示
 
     [Header("Game Settings")]
     public float restartDelay = 1.0f;   // 重新开始延迟时间
@@ -56,6 +56,9 @@ public class GameController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        scoreNumber = FindFirstObjectByType<SpriteAssetFont>();
+        scoreNumber.SetNumber(0);
+
         InitializeCharacters();
         RestartGame();
     }
@@ -111,7 +114,7 @@ public class GameController : MonoBehaviour
         }
         // 创建新差异点
         CreateDifference();
-        
+
         isScored = false;
     }
 
@@ -126,7 +129,7 @@ public class GameController : MonoBehaviour
             correctChar = currentNormalChar,
         };
     }
-    
+
     public void OnCharacterClicked(int index)
     {
         if (isScored) return;
@@ -135,8 +138,11 @@ public class GameController : MonoBehaviour
             isScored = true;
             HighlightCharacter(index);
             // 得分逻辑
+            int oldScore = score;
             score += 100;
-            scoreNumber.SetNumber(score);
+            DOTween.To(() => oldScore, x => scoreNumber.SetNumber(x), score, 0.5f)
+                .SetEase(Ease.OutQuad)
+                .SetTarget(scoreNumber.gameObject);
             // 延迟后重新开始游戏
             Invoke("RestartGame", restartDelay);
         }
@@ -179,7 +185,7 @@ public class GameController : MonoBehaviour
                 originalData.colors.Add(colors[charInfo.vertexIndex + j]);
             }
         }
-        
+
         // 创建动画序列
         DOTween.Sequence()
             .Append(tmp.transform.DOShakePosition(

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 12fa529e22779e24fabcf1d0fb19ddd9
+labels:
+- script
+- c#
+- example
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Scripts/Helper/PathIndicator.cs
+  uploadId: 709069

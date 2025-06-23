@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 6391d79d53a300d4c9d18f437b573ee3
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 2506
+  packageName: Simple Waypoint System
+  packageVersion: 5.5.3
+  assetPath: Assets/SimpleWaypointSystem/Examples/Assets/Prefabs/WaypointGizmo.prefab
+  uploadId: 709069
