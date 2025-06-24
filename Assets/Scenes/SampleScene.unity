@@ -201,6 +201,8 @@ MonoBehaviour:
   spawnInterval: 0.1
   trailColor: {r: 1, g: 1, b: 1, a: 0.5}
   orderInLayer: -1
+  positionThreshold: 0.01
+  rotationThreshold: 0.1
 --- !u!212 &83485354
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -757,6 +759,8 @@ MonoBehaviour:
   spawnInterval: 0.1
   trailColor: {r: 1, g: 1, b: 1, a: 0.5}
   orderInLayer: -1
+  positionThreshold: 0.01
+  rotationThreshold: 0.1
 --- !u!212 &635408572
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1390,16 +1394,16 @@ MonoBehaviour:
   - {fileID: 1491982562}
   - {fileID: 850569528}
   coinPrefab: {fileID: 6062206027000158061, guid: b69f490cde5f457469d535f86973deba, type: 3}
-  coinSpacing: 2
+  coinSpacing: 0.5
   pathType: 1
   pathMode: 2
-  resolution: 50
-  paveDuration: 3
-  coinAppearDuration: 1
-  appearEase: 7
+  pathResolution: 50
+  paveDuration: 5
+  coinAppearDuration: 0.5
+  appearEase: 10
   showDebugInfo: 1
   showPathCurve: 1
-  showWaypoints: 1
+  showWaypoints: 0
   showCoinPositions: 1
 --- !u!4 &1113426350
 Transform:
@@ -2362,6 +2366,8 @@ MonoBehaviour:
   spawnInterval: 0.1
   trailColor: {r: 1, g: 1, b: 1, a: 0.5}
   orderInLayer: -1
+  positionThreshold: 0.01
+  rotationThreshold: 0.1
 --- !u!212 &1916581756
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2426,7 +2432,7 @@ Transform:
   m_GameObject: {fileID: 1916581754}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.54, y: 0, z: 0}
+  m_LocalPosition: {x: 6.97, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

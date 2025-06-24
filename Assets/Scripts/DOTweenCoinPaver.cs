@@ -45,7 +45,7 @@ public class DOTweenCoinPaver : MonoBehaviour
 
     [Header("动画配置")]
     [Tooltip("整个铺设动画的总持续时间(秒)")]
-    [Range(0.5f, 10f)]
+    [Range(0.5f, 30f)]
     public float paveDuration = 3f;
 
     [Tooltip("单个金币出现动画的持续时间(秒)")]
@@ -203,19 +203,20 @@ public class DOTweenCoinPaver : MonoBehaviour
         // 实例化金币
         GameObject coin = Instantiate(coinPrefab, coinPosition, Quaternion.identity, transform);
         coin.transform.localScale = Vector3.zero;
-        // 为金币添加随机动画偏移
+        // 为金币添加随机动画帧偏移
         RandomizeAnimationOffset(coin);
         // 计算出现时间
         float startTime = coinIndex * timeInterval;
-        // 创建缩放动画
-        Tween scaleTween = coin.transform
-            .DOScale(1f, coinAppearDuration)
-            .SetEase(appearEase);
+        // 创建淡出和缩放动画
+        SpriteRenderer spriteRenderer = coin.GetComponent<SpriteRenderer>();
+        Tween fadeTween = spriteRenderer.DOFade(1f, 1f).SetEase(appearEase);
+        Tween scaleTween = coin.transform.DOScale(Vector3.one, 1f).SetEase(appearEase);
+        sequence.Insert(startTime, fadeTween);
         sequence.Insert(startTime, scaleTween);
     }
 
     /// <summary>
-    /// 为金币添加随机的动画偏移
+    /// 为金币添加随机的动画帧偏移
     /// </summary>
     private void RandomizeAnimationOffset(GameObject coin)
     {
