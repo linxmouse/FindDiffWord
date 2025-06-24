@@ -23,23 +23,20 @@ using System.Collections.Generic;
 /// 3. 将此脚本添加到空 GameObject 上
 /// 4. 配置相关参数并运行
 /// 
-/// 作者：AI Assistant
-/// 版本：2.0 - 线性分段算法版本
-/// 兼容：Unity 2019.4+, Simple Waypoint System, DoTween
 /// </summary>
 public class CoinPathPaver : MonoBehaviour
 {
     #region 公共配置参数
 
     [Header("路径配置")]
-    [Tooltip("Simple Waypoint System 的路径管理器。必须包含至少2个路径点。")]
+    [Tooltip("Simple Waypoint System 的路径管理器. 必须包含至少2个路径点")]
     public PathManager pathManager;
 
     [Header("金币配置")]
-    [Tooltip("金币预制体。应包含 SpriteRenderer（用于显示）和 Animator（用于序列帧动画）组件。")]
+    [Tooltip("金币预制体. 应包含 SpriteRenderer(用于显示)和 Animator(用于序列帧动画)组件")]
     public GameObject coinPrefab;
     
-    [Tooltip("金币之间的间距（Unity单位）。值越小金币越密集，值越大金币越稀疏。")]
+    [Tooltip("金币之间的间距(Unity单位). 值越小金币越密集, 值越大金币越稀疏")]
     [Range(0.1f, 10f)]
     public float coinSpacing = 2f;
 
@@ -48,15 +45,15 @@ public class CoinPathPaver : MonoBehaviour
     [Range(0.5f, 10f)]
     public float paveDuration = 3f;
     
-    [Tooltip("单个金币出现动画的持续时间（秒）。推荐值：0.3-0.8秒。")]
+    [Tooltip("单个金币出现动画的持续时间(秒). 推荐值: 0.3-0.8秒")]
     [Range(0.1f, 2f)]
     public float coinAppearDuration = 0.3f;
     
-    [Tooltip("金币出现时的缓动效果。OutBack 提供弹性效果，OutQuad 提供平滑效果。")]
+    [Tooltip("金币出现时的缓动效果. OutBack 提供弹性效果, OutQuad 提供平滑效果")]
     public Ease appearEase = Ease.OutBack;
 
     [Header("调试配置")]
-    [Tooltip("是否在控制台输出调试信息，包括路径长度、金币数量等统计数据。")]
+    [Tooltip("是否在控制台输出调试信息, 包括路径长度、金币数量等统计数据")]
     public bool showDebugInfo = true;
 
     #endregion
@@ -109,13 +106,13 @@ public class CoinPathPaver : MonoBehaviour
     {
         if (pathManager == null)
         {
-            Debug.LogError("CoinPathPaver: PathManager 未设置！请在 Inspector 中拖入一个包含路径点的 PathManager。");
+            Debug.LogError("CoinPathPaver: PathManager 未设置! 请在 Inspector 中拖入一个包含路径点的 PathManager");
             return false;
         }
         
         if (coinPrefab == null)
         {
-            Debug.LogError("CoinPathPaver: 金币预制体未设置！请在 Inspector 中拖入金币预制体。");
+            Debug.LogError("CoinPathPaver: 金币预制体未设置! 请在 Inspector 中拖入金币预制体");
             return false;
         }
 
@@ -134,7 +131,7 @@ public class CoinPathPaver : MonoBehaviour
         // 验证路径点数量
         if (pathPoints.Length < 2)
         {
-            Debug.LogError("CoinPathPaver: 路径点数量不足！至少需要2个点才能构成有效路径。");
+            Debug.LogError("CoinPathPaver: 路径点数量不足! 至少需要2个点才能构成有效路径");
             return;
         }
 
